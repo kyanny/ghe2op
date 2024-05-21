@@ -1,4 +1,37 @@
 #!/bin/bash
+set -e
+
+while [[ $# -gt 0 ]]; do
+    key="$1"
+    case $key in
+        -e|--environment-file)
+        environment_file="$2"
+        shift
+        ;;
+        -h|--help)
+        echo "Usage: $0 [OPTIONS]"
+        echo "Options:"
+        echo "  -e, --environment-file FILE    Specify the environment file (default: environment.json)"
+        echo "  -h, --help                     Show help"
+        exit 0
+        ;;
+        *)
+        # Unknown option
+        echo "Unknown option: $key"
+        exit 1
+        ;;
+    esac
+    shift
+done
+
+if [[ -z $environment_file ]]; then
+    environment_file="environment.json"
+fi
+
+if [[ ! -f $environment_file ]]; then
+    echo "Environment file not found: $environment_file"
+    exit 1
+fi
 
 ghes_version=$(jq -r '.ghes_version' environment.json)
 password_recovery=$(jq -r '.password_recovery' environment.json)
