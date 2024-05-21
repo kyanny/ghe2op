@@ -1,0 +1,45 @@
+#!/bin/bash
+
+ghes_version=$(jq -r '.ghes_version' environment.json)
+password_recovery=$(jq -r '.password_recovery' environment.json)
+hostname=$(jq -r '.hostname' environment.json)
+termination_date=$(jq -r '.termination_date' environment.json)
+token=$(jq -r '.token' environment.json)
+token="${token:-null}"
+mgmt_password=$(jq -r '.mgmt_password' environment.json)
+admin_password=$(jq -r '.admin_password' environment.json)
+ip_addresses=$(jq -r '.ip_addresses' environment.json)
+ip_primary=$(jq -r '.ip_primary' environment.json)
+ip_replica=$(jq -r '.ip_replica' environment.json)
+admin_user=$(jq -r '.admin_user' environment.json)
+token_generate_url=$(jq -r '.token_generate_url' environment.json)
+terraform_workspace_id=$(jq -r '.terraform_workspace_id' environment.json)
+terraform_workspace_id="${terraform_workspace_id:-null}"
+
+web_url="https://$hostname"
+ssh_url="ssh://admin@$hostname:122"
+notesPlain=$(cat <<EOM
+IP Addresses: $ip_addresses
+
+EOM
+)
+
+op item template get "Login" \
+    | jq --arg hostname "$hostname" --arg ghes_version "$ghes_version" '.title |= "[GHES \($ghes_version)] \($hostname)"' \
+    | jq --arg admin_user "$admin_user" '.fields |= map(if .id == "username" then .value = $admin_user else . end)' \
+    | jq --arg admin_password "$admin_password" '.fields |= map(if .id == "password" then .value = $admin_password else . end)' \
+    | jq --arg web_url "$web_url" --arg ssh_url "$ssh_url" --arg token_generate_url "$token_generate_url" '.urls = [{primary: true, label: "website", href: $web_url}, {label: "ssh", href: $ssh_url}, {label: "token generation", href: $token_generate_url}]' \
+    | jq --arg token "$token" '.fields += [{id: "token", type: "STRING", label: "PAT", value: $token}]' \
+    | jq --arg hostname "$hostname" '.fields += [{id: "hostname", type: "STRING", label: "Hostname", value: $hostname}]' \
+    | jq --arg ip_primary "$ip_primary" '.fields += [{id: "ip_primary", type: "STRING", label: "Primary IP", value: $ip_primary}]' \
+    | jq --arg ip_replica "$ip_replica" '.fields += [{id: "ip_replica", type: "STRING", label: "Replica IP", value: $ip_replica}]' \
+    | jq --arg terraform_workspace_id "$terraform_workspace_id" '.fields += [{id: "terraform_workspace_id", type: "STRING", label: "Terraform Workspace ID", value: $terraform_workspace_id}]' \
+    | jq --arg ghes_version "$ghes_version" '.fields += [{id: "ghes_version", type: "STRING", label: "GHES Version", value: $ghes_version}]' \
+    | jq --arg password_recovery "$password_recovery" '.fields += [{id: "password_recovery", type: "STRING", label: "Password Recovery", value: $password_recovery}]' \
+    | jq --arg termination_date "$termination_date" '.fields += [{id: "termination_date", type: "STRING", label: "Termination Date", value: $termination_date}]' \
+    | jq --arg mgmt_password "$mgmt_password" '.fields += [{id: "mgmt_password", type: "CONCEALED", label: "Management Password", value: $mgmt_password}]' \
+    | jq --arg ip_primary "$ip_primary" '.fields += [{id: "ttl_ip_primary", type: "STRING", label: "Change TTL Primary IP", value: ".gheboot change-ttl \($ip_primary) --ttl 7"}]' \
+    | jq --arg ip_replica "$ip_replica" '.fields += [{id: "ttl_ip_replica", type: "STRING", label: "Change TTL Replica IP", value: ".gheboot change-ttl \($ip_replica) --ttl 7"}]' \
+    | jq --arg terraform_workspace_id "$terraform_workspace_id" '.fields += [{id: "ttl_terraform_workspace_id", type: "STRING", label: "Change TTL Terraform Workspace ID", value: ".gheboot change-ttl \($terraform_workspace_id) --ttl 7"}]' \
+    | jq --arg notesPlain "$notesPlain" '.fields |= map(if .id == "notesPlain" then .value = $notesPlain else . end)' \
+    | op item create --vault "test" -
