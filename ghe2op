@@ -49,6 +49,7 @@ token_generate_url=$(jq -r '.token_generate_url' "$environment_file")
 terraform_workspace_id=$(jq -r '.terraform_workspace_id' "$environment_file")
 terraform_workspace_id="${terraform_workspace_id:-null}"
 
+title="[GHES $ghes_version] $hostname"
 web_url="https://$hostname"
 ssh_url="ssh://admin@$hostname:122"
 notesPlain=$(cat <<EOM
@@ -58,7 +59,7 @@ EOM
 )
 
 op item template get "Login" \
-    | jq --arg hostname "$hostname" --arg ghes_version "$ghes_version" '.title |= "[GHES \($ghes_version)] \($hostname)"' \
+    | jq --arg title "$title" '.title |= $title' \
     | jq --arg admin_user "$admin_user" '.fields |= map(if .id == "username" then .value = $admin_user else . end)' \
     | jq --arg admin_password "$admin_password" '.fields |= map(if .id == "password" then .value = $admin_password else . end)' \
     | jq --arg web_url "$web_url" --arg ssh_url "$ssh_url" --arg token_generate_url "$token_generate_url" '.urls = [{primary: true, label: "website", href: $web_url}, {label: "ssh", href: $ssh_url}, {label: "token generation", href: $token_generate_url}]' \
