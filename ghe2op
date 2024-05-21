@@ -33,20 +33,20 @@ if [[ ! -f $environment_file ]]; then
     exit 1
 fi
 
-ghes_version=$(jq -r '.ghes_version' environment.json)
-password_recovery=$(jq -r '.password_recovery' environment.json)
-hostname=$(jq -r '.hostname' environment.json)
-termination_date=$(jq -r '.termination_date' environment.json)
-token=$(jq -r '.token' environment.json)
+ghes_version=$(jq -r '.ghes_version' "$environment_file")
+password_recovery=$(jq -r '.password_recovery' "$environment_file")
+hostname=$(jq -r '.hostname' "$environment_file")
+termination_date=$(jq -r '.termination_date' "$environment_file")
+token=$(jq -r '.token' "$environment_file")
 token="${token:-null}"
-mgmt_password=$(jq -r '.mgmt_password' environment.json)
-admin_password=$(jq -r '.admin_password' environment.json)
-ip_addresses=$(jq -r '.ip_addresses' environment.json)
-ip_primary=$(jq -r '.ip_primary' environment.json)
-ip_replica=$(jq -r '.ip_replica' environment.json)
-admin_user=$(jq -r '.admin_user' environment.json)
-token_generate_url=$(jq -r '.token_generate_url' environment.json)
-terraform_workspace_id=$(jq -r '.terraform_workspace_id' environment.json)
+mgmt_password=$(jq -r '.mgmt_password' "$environment_file")
+admin_password=$(jq -r '.admin_password' "$environment_file")
+ip_addresses=$(jq -r '.ip_addresses' "$environment_file")
+ip_primary=$(jq -r '.ip_primary' "$environment_file")
+ip_replica=$(jq -r '.ip_replica' "$environment_file")
+admin_user=$(jq -r '.admin_user' "$environment_file")
+token_generate_url=$(jq -r '.token_generate_url' "$environment_file")
+terraform_workspace_id=$(jq -r '.terraform_workspace_id' "$environment_file")
 terraform_workspace_id="${terraform_workspace_id:-null}"
 
 web_url="https://$hostname"
