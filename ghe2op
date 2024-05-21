@@ -75,4 +75,4 @@ op item template get "Login" \
     | jq --arg ip_replica "$ip_replica" '.fields += [{id: "ttl_ip_replica", type: "STRING", label: "Change TTL Replica IP", value: ".gheboot change-ttl \($ip_replica) --ttl 7"}]' \
     | jq --arg terraform_workspace_id "$terraform_workspace_id" '.fields += [{id: "ttl_terraform_workspace_id", type: "STRING", label: "Change TTL Terraform Workspace ID", value: ".gheboot change-ttl \($terraform_workspace_id) --ttl 7"}]' \
     | jq --arg notesPlain "$notesPlain" '.fields |= map(if .id == "notesPlain" then .value = $notesPlain else . end)' \
-    | op item create --vault "test" -
+    | op item create --tags gheboot --vault "test" -
