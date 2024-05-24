@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+version="{sha}"
+
 while [[ $# -gt 0 ]]; do
     key="$1"
     case $key in
@@ -13,6 +15,11 @@ while [[ $# -gt 0 ]]; do
         echo "Options:"
         echo "  -e, --environment-file FILE    Specify the environment file (default: environment.json)"
         echo "  -h, --help                     Show help"
+        echo "  -v, --version                  Show version"
+        exit 0
+        ;;
+        -v|--version)
+        echo "ghe2op $version"
         exit 0
         ;;
         *)
