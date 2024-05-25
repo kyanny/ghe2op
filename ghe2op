@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-version="{sha}"
+Date="$Date$"
+Revision='$Revision$'
 
 while [[ $# -gt 0 ]]; do
     key="$1"
@@ -19,7 +20,7 @@ while [[ $# -gt 0 ]]; do
         exit 0
         ;;
         -v|--version)
-        echo "ghe2op $version"
+        echo "ghe2op version \"$Revision\" $Date"
         exit 0
         ;;
         *)
