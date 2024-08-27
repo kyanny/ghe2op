@@ -19,7 +19,7 @@ make install
 ```
 cd path-to-the-power
 ./ghe2json.py
-# optionally, ./terraformworkspaceid.py
+./terraformworkspaceid.py # optional
 ghe2op
 ```
 
