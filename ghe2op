@@ -13,6 +13,12 @@ while [[ $# -gt 0 ]]; do
         ;;
         -h|--help)
         echo "Usage: $0 [OPTIONS]"
+        echo ""
+        echo "  cd path-to-the-power"
+        echo "  ./ghe2json.py"
+        echo "  ./terraformworkspaceid.py # optional"
+        echo "  ghe2op"
+        echo ""
         echo "Options:"
         echo "  -e, --environment-file FILE    Specify the environment file (default: environment.json)"
         echo "  -h, --help                     Show help"
