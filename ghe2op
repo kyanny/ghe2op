@@ -77,7 +77,7 @@ op item template get "Login" \
     | jq --arg admin_user "$admin_user" '.fields |= map(if .id == "username" then .value = $admin_user else . end)' \
     | jq --arg admin_password "$admin_password" '.fields |= map(if .id == "password" then .value = $admin_password else . end)' \
     | jq --arg web_url "$web_url" --arg ssh_url "$ssh_url" --arg token_generate_url "$token_generate_url" '.urls = [{primary: true, label: "website", href: $web_url}, {label: "ssh", href: $ssh_url}, {label: "token generation", href: $token_generate_url}]' \
-    | jq --arg token "$token" '.fields += [{id: "token", type: "STRING", label: "PAT", value: $token}]' \
+    | jq --arg token "$token" '.fields += [{id: "token", type: "CONCEALED", label: "PAT", value: $token}]' \
     | jq --arg hostname "$hostname" '.fields += [{id: "hostname", type: "STRING", label: "Hostname", value: $hostname}]' \
     | jq --arg ip_primary "$ip_primary" '.fields += [{id: "ip_primary", type: "STRING", label: "Primary IP", value: $ip_primary}]' \
     | jq --arg ip_replica "$ip_replica" '.fields += [{id: "ip_replica", type: "STRING", label: "Replica IP", value: $ip_replica}]' \
